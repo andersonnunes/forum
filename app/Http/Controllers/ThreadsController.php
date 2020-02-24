@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Integerr as IntegerrAlias;
 use App\Thread;
 use Illuminate\Http\Request;
+use phpDocumentor\Reflection\Types\Integer;
 
 class ThreadsController extends Controller
 {
@@ -47,6 +49,7 @@ class ThreadsController extends Controller
     {
         $thread = Thread::create([
             'user_id' => auth()->id(),
+            'channel_id' => request('channel_id'),
             'title' => request('title'),
             'body' => request('body')
         ]);
@@ -57,10 +60,11 @@ class ThreadsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Thread  $thread
+     * @param $channelId
+     * @param \App\Thread $thread
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function show(Thread $thread)
+    public function show($channelId, Thread $thread)
     {
         return view('threads.show', compact('thread'));
     }
