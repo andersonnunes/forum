@@ -3,11 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Channel;
-use App\Http\Controllers\Integerr as IntegerrAlias;
+use App\Filters\ThreadFilters;
 use App\Thread;
-use App\User;
 use Illuminate\Http\Request;
-use phpDocumentor\Reflection\Types\Integer;
 
 class ThreadsController extends Controller
 {
@@ -24,22 +22,9 @@ class ThreadsController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index(Channel $channel)
+    public function index(Channel $channel, ThreadFilters $filters)
     {
-        if ($channel->exists) {
-            $threads = $channel->threads()->latest();
-        } else {
-            $threads = Thread::latest();
-        }
-
-        // if request('by'), we should filter by the given username.
-        if ($username = request('by')) {
-            $user = User::where('name', $username)->firstOrFail();
-
-            $threads->where('user_id', $user->id);
-        }
-
-        $threads = $threads->get();
+        $threads = $this->getThreads($channel, $filters);
 
         return view('threads.index', compact('threads'));
     }
@@ -92,36 +77,20 @@ class ThreadsController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Fetch all relevant threads.
      *
-     * @param  \App\Thread  $thread
-     * @return \Illuminate\Http\Response
+     * @param Channel       $channel
+     * @param ThreadFilters $filters
+     * @return mixed
      */
-    public function edit(Thread $thread)
+    private function getThreads(Channel $channel, ThreadFilters $filters)
     {
-        //
-    }
+        $threads = Thread::latest()->filter($filters);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Thread  $thread
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Thread $thread)
-    {
-        //
-    }
+        if ($channel->exists) {
+            $threads->where('channel_id', $channel->id);
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Thread  $thread
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Thread $thread)
-    {
-        //
+        return $threads->get();
     }
 }
