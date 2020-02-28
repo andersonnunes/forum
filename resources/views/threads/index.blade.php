@@ -12,7 +12,9 @@
                             <article>
                                 <div class="level">
                                     <h4 class="flex">
-                                       {{ $thread->title }}
+                                        <a href="{{ $thread->path() }}">
+                                            {{ $thread->title }}
+                                        </a>
                                     </h4>
 
                                     <a href="{{ $thread->path() }}">
