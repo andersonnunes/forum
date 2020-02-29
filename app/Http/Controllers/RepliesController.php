@@ -35,4 +35,19 @@ class RepliesController extends Controller
 
         return back()->with('flash', 'Your reply has been left.');
     }
+
+    /**
+     * Delete the given reply.
+     *
+     * @param  Reply $reply
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function destroy(Reply $reply)
+    {
+        $this->authorize('update', $reply);
+
+        $reply->delete();
+
+        return back();
+    }
 }
