@@ -2,6 +2,8 @@
 
 namespace App;
 
+use function foo\func;
+
 trait RecordsActivity
 {
     /**
@@ -16,6 +18,10 @@ trait RecordsActivity
                 $model->recordActivity($event);
             });
         }
+
+        static::deleting(function ($model) {
+            $model->activity()->delete();
+        });
     }
 
     /**
