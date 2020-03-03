@@ -23,6 +23,7 @@ class RepliesController extends Controller
      * @param $channelId
      * @param Thread $thread
      * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function store($channelId, Thread $thread)
     {
@@ -37,10 +38,27 @@ class RepliesController extends Controller
     }
 
     /**
+     * Update an existing reply.
+     *
+     * @param Reply $reply
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function update(Reply $reply)
+    {
+        $this->authorize('update', $reply);
+
+        $this->validate(request(), ['body' => 'required']);
+
+        $reply->update(request(['body']));
+    }
+
+    /**
      * Delete the given reply.
      *
-     * @param  Reply $reply
+     * @param Reply $reply
      * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function destroy(Reply $reply)
     {
