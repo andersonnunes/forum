@@ -57,7 +57,7 @@ class RepliesController extends Controller
      * Delete the given reply.
      *
      * @param Reply $reply
-     * @return \Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\RedirectResponse|\Illuminate\Http\Response
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function destroy(Reply $reply)
@@ -65,6 +65,10 @@ class RepliesController extends Controller
         $this->authorize('update', $reply);
 
         $reply->delete();
+
+        if(request()->expectsJson()) {
+            return response(['status' => 'Reply deleted']);
+        }
 
         return back();
     }
