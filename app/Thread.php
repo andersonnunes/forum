@@ -93,13 +93,23 @@ class Thread extends Model
     {
         $reply = $this->replies()->create($reply);
 
+        $this->notifySubscribers($reply);
+
+        return $reply;
+    }
+
+    /**
+     * Notify all thread subscribers about a new reply.
+     *
+     * @param \App\Reply $reply
+     */
+    public function notifySubscribers($reply)
+    {
         $this->subscriptions
             ->filter(function ($sub) use ($reply)  {
                 return $sub->user_id != $reply->user_id;
             })
             ->each->notify($reply);
-
-        return $reply;
     }
 
     /**
