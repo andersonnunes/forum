@@ -18,8 +18,6 @@
 
 <script>
     export default {
-        props: ['endpoint'],
-
         data() {
             return {
                 body: ''
@@ -34,7 +32,7 @@
 
         methods: {
             async addReply() {
-                const { data } = await axios.post(this.endpoint, { body: this.body });
+                const { data } = await axios.post(location.pathname + '/replies', { body: this.body });
 
                 this.body = '';
 
