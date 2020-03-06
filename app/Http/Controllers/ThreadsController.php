@@ -4,14 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Channel;
 use App\Filters\ThreadFilters;
-use App\Inspections\Spam;
 use App\Thread;
+use Exception;
+use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Routing\Redirector;
+use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
 
 class ThreadsController extends Controller
 {
     /**
-     * ThreadsController constructor.
+     * Create a new ThreadsController instance.
      */
     public function __construct()
     {
@@ -21,7 +28,9 @@ class ThreadsController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @param Channel $channel
+     * @param ThreadFilters $filters
+     * @return Factory|View
      */
     public function index(Channel $channel, ThreadFilters $filters)
     {
@@ -37,7 +46,7 @@ class ThreadsController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return Factory|View
      */
     public function create()
     {
@@ -47,8 +56,9 @@ class ThreadsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @param Request $request
+     * @return RedirectResponse|Redirector
+     * @throws ValidationException
      */
     public function store(Request $request)
     {
@@ -73,8 +83,8 @@ class ThreadsController extends Controller
      * Display the specified resource.
      *
      * @param integer $channel
-     * @param \App\Thread $thread
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @param Thread $thread
+     * @return Factory|View
      */
     public function show($channel, Thread $thread)
     {
@@ -88,8 +98,8 @@ class ThreadsController extends Controller
     /**
      * @param integer $channel
      * @param Thread $thread
-     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\Routing\Redirector
-     * @throws \Exception
+     * @return ResponseFactory|RedirectResponse|Response|Redirector
+     * @throws Exception
      */
     public function destroy($channel, Thread $thread)
     {
