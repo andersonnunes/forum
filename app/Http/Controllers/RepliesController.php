@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Inspections\Spam;
+use App\Http\Requests\CreatePostRequest;
 use App\Reply;
 use App\Thread;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
-use phpDocumentor\Reflection\Types\Integer;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Response;
 
 class RepliesController extends Controller
 {
@@ -24,7 +27,7 @@ class RepliesController extends Controller
      *
      * @param int $channelId
      * @param Thread $thread
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     * @return LengthAwarePaginator
      */
     public function index($channelId, Thread $thread)
     {
@@ -36,35 +39,23 @@ class RepliesController extends Controller
      *
      * @param $channelId
      * @param Thread $thread
-     * @param Spam $spam
-     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Database\Eloquent\Model|\Illuminate\Http\Response
+     * @param CreatePostRequest $form
+     * @return ResponseFactory|Model|Response
      */
-    public function store($channelId, Thread $thread, Spam $spam)
+    public function store($channelId, Thread $thread, CreatePostRequest $form)
     {
-        if (Gate::denies('create', new Reply)) {
-            return response('Your are posting too frequently. Please take a break. :)', 429);
-        }
-
-        try {
-            $this->validate(request(), ['body' => 'required|spamfree']);
-
-            $reply = $thread->addReply([
-                'body' => request('body'),
-                'user_id' => auth()->id()
-            ]);
-        } catch (\Exception $e) {
-            return response('Sorry, your reply could not be saved at this time.', 422);
-        }
-
-        return $reply->load('owner');
+        return $thread->addReply([
+            'body' => request('body'),
+            'user_id' => auth()->id()
+        ])->load('owner');
     }
 
     /**
      * Update an existing reply.
      *
      * @param Reply $reply
-     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @return ResponseFactory|Response
+     * @throws AuthorizationException
      */
     public function update(Reply $reply)
     {
@@ -83,8 +74,8 @@ class RepliesController extends Controller
      * Delete the given reply.
      *
      * @param Reply $reply
-     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\RedirectResponse|\Illuminate\Http\Response
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @return ResponseFactory|RedirectResponse|Response
+     * @throws AuthorizationException
      */
     public function destroy(Reply $reply)
     {
