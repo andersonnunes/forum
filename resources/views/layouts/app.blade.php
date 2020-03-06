@@ -18,6 +18,7 @@
         ]) !!};
     </script>
     <script src="{{ asset('js/app.js') }}" defer></script>
+    @yield('scripts')
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -32,6 +33,8 @@
         .flex { flex: 1; }
         [v-cloack] { display: none; }
     </style>
+
+    @yield('head')
 </head>
 <body>
     <div id="app">

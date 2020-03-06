@@ -46,7 +46,7 @@ class ReplyTest extends TestCase
     function it_wraps_mentioned_usernames_in_the_body_within_anchor_tags()
     {
         $reply = new Reply([
-            'body' => 'Hello @Jane-Doe.'
+            'body' => 'Hello @Jane-Doe'
         ]);
 
         $this->assertEquals(
