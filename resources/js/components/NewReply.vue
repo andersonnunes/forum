@@ -32,13 +32,17 @@
 
         methods: {
             async addReply() {
-                const { data } = await axios.post(location.pathname + '/replies', { body: this.body });
+                try {
+                    const { data } = await axios.post(location.pathname + '/replies', { body: this.body });
 
-                this.body = '';
+                    this.body = '';
 
-                flash('Your reply has been posted.');
+                    flash('Your reply has been posted.');
 
-                this.$emit('created', data);
+                    this.$emit('created', data);
+                } catch (error) {
+                    flash(error.response.data, 'danger');
+                }
             }
         }
     }
