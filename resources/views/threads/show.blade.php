@@ -12,10 +12,16 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="level">
-                           <span class="flex">
-                               <a href="{{ route('profile', $thread->creator) }}">{{ $thread->creator->name }}</a> posted:
-                               {{ $thread->title }}
-                           </span>
+                                <img src="{{ $thread->creator->avatar_path }}"
+                                     alt="{{ $thread->creator->name }}"
+                                     width="25"
+                                     height="25"
+                                     class="mr-1">
+
+                                <span class="flex">
+                                    <a href="{{ route('profile', $thread->creator) }}">{{ $thread->creator->name }}</a> posted:
+                                    {{ $thread->title }}
+                                </span>
 
                                 @can ('update', $thread)
                                     <form action="{{ $thread->path() }}" method="post">
