@@ -16,20 +16,34 @@ class CreateThreadsTest extends TestCase
         $this->withExceptionHandling();
 
         $this->get('/threads/create')
-            ->assertRedirect('/login');
+            ->assertRedirect(route('login'));
 
         $this->post('/threads')
-            ->assertRedirect('/login');
+            ->assertRedirect(route('login'));
     }
 
     /** @test */
-    function an_authenticated_user_can_create_new_forum_threads()
+    function new_users_must_first_confirm_their_email_address_before_creating_threads()
+    {
+        $user = factory('App\User')->states('unconfirmed')->create();
+
+        $this->signIn($user);
+
+        $thread = make('App\Thread');
+
+        $this->post(route('threads', $thread->toArray()))
+            ->assertRedirect('/threads')
+            ->assertSessionHas('flash', 'You must first confirm your email address.');
+    }
+
+    /** @test */
+    function a_user_can_create_new_forum_threads()
     {
         $this->signIn();
 
         $thread = create('App\Thread');
 
-        $response =  $this->post('/threads', $thread->toArray());
+        $response =  $this->post(route('threads'), $thread->toArray());
 
         $this->get($response->headers->get('Location'))
             ->assertSee($thread->title)
