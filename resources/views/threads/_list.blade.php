@@ -19,6 +19,10 @@
         </div>
 
         <div class="card-body">{{ $thread->body }}</div>
+
+        <div class="card-footer">
+            {{ $thread->visits }} Visits
+        </div>
     </div>
     <br>
 @empty
