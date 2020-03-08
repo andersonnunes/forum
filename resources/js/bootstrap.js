@@ -1,6 +1,8 @@
 window._ = require('lodash');
 window.Vue = require('vue');
 
+const authorizations = require('./authorizations');
+
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
  * for JavaScript based Bootstrap features such as modals and tabs. This
@@ -15,11 +17,17 @@ try {
 } catch (e) {}
 
 
-Vue.prototype.authorize = function(handler) {
-    let user = window.App.user;
+Vue.prototype.authorize = function(...params) {
+    if (!window.App.signedIn) return false;
 
-    return user ? handler(user) : false;
+    if (typeof params[0] === 'string') {
+        return authorizations[params[0]](params[1]);
+    }
+
+    return params[0](window.App.user);
 };
+
+Vue.prototype.signedIn = window.App.signedIn;
 
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests

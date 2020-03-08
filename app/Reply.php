@@ -29,7 +29,7 @@ class Reply extends Model
      *
      * @var array
      */
-    protected $appends = ['favoritesCount', 'isFavorited'];
+    protected $appends = ['favoritesCount', 'isFavorited', 'isBest'];
 
     /**
      * Boot the reply instance.
@@ -121,5 +121,16 @@ class Reply extends Model
     public function isBest()
     {
         return $this->thread->best_reply_id == $this->id;
+    }
+
+    /**
+     *
+     * Determine if the current reply is marked as the best.
+     *
+     * @return bool
+     */
+    public function getIsBestAttribute()
+    {
+        return $this->isBest();
     }
 }
