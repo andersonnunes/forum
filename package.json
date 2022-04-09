@@ -27,6 +27,6 @@
         "@fortawesome/fontawesome-free": "^5.12.1",
         "at.js": "^1.5.4",
         "jquery.caret": "^0.3.1",
-        "moment": "^2.24.0"
+        "moment": "^2.29.2"
     }
 }
